@@ -1,0 +1,2 @@
+<?php namespace Blue\Core;
+class Router { private $routes=[]; public function get($p,$h){$this->routes['GET'][$p]=$h;} public function post($p,$h){$this->routes['POST'][$p]=$h;} public function dispatch($path){ csrf_check(); $method=$_SERVER['REQUEST_METHOD']; $h=$this->routes[$method][$path]??null; if(!$h){ http_response_code(404); echo '404 Not Found: '.e($path); return; } if(is_callable($h)){ $h(); return; } [$class,$methodName]=$h; (new $class)->$methodName(); } }

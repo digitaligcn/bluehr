@@ -1,0 +1,2 @@
+<?php namespace Blue\Services; use Blue\Core\Database;
+class Audit { public static function log($action,$entity=null,$entityId=null,$payload=[]){ try{ Database::exec('INSERT INTO audit_logs(user_id,action,entity,entity_id,payload,ip_address,created_at) VALUES(?,?,?,?,?,?,NOW())',[ $_SESSION['user']['id']??null,$action,$entity,$entityId,json_encode($payload),$_SERVER['REMOTE_ADDR']??null]); }catch(\Throwable $e){} } }

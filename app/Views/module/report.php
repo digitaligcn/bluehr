@@ -1,0 +1,1 @@
+<div class="page-head"><div><h1><?= e($module['name']) ?> Report</h1><p class="muted">Summary report for <?= e($module['name']) ?>.</p></div></div><div class="grid cards"><div class="card stat-card"><span>Total Records</span><strong><?= e($count) ?></strong></div><div class="card stat-card"><span>Status</span><strong>Ready</strong></div></div>

@@ -1,0 +1,1 @@
+<div class="topbar"><div><strong><?= e($title ?? '') ?></strong><span class="muted">Operational workspace</span></div><div class="topbar-actions"><input class="search" data-table-search placeholder="Search table..."><span class="muted"><?= e($_SESSION['user']['name'] ?? '') ?></span><a class="btn light" href="<?= app_url('/logout') ?>">Logout</a></div></div>

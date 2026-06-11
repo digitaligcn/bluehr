@@ -1,0 +1,37 @@
+
+services:
+  app:
+    image: php-fpm:8.3
+    container_name: myapp-php
+    working_dir: /app
+    volumes:
+      - ./:/app
+    restart: unless-stopped
+
+  web:
+    image: nginx:latest
+    container_name: myapp-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/app
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    restart: unless-stopped
+
+  db:
+    image: postgres:16
+    container_name: myapp-postgres
+    environment:
+      POSTGRES_DB: myapp
+      POSTGRES_USER: myapp
+      POSTGRES_PASSWORD: myapp_password
+    volumes:
+      - myapp_pgdata:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    restart: unless-stopped
+
+volumes:
+  myapp_pgdata:

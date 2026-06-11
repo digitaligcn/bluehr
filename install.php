@@ -1,0 +1,15 @@
+<?php
+    $error=null; $success=false;
+    if($_SERVER['REQUEST_METHOD']==='POST'){
+      $host=$_POST['db_host']??'127.0.0.1'; $db=$_POST['db_name']??'bluehr'; $user=$_POST['db_user']??'root'; $pass=$_POST['db_pass']??''; $appUrl=rtrim($_POST['app_url']??'http://localhost/bluehr/public','/');
+      try{ $pdo=new PDO('mysql:host='.$host.';charset=utf8mb4',$user,$pass,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION]); $pdo->exec('CREATE DATABASE IF NOT EXISTS `'.$db.'` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci'); $pdo->exec('USE `'.$db.'`'); $schema=file_get_contents(__DIR__.'/database/schema.sql'); foreach(array_filter(array_map('trim',explode(';',$schema))) as $sql){ if($sql) $pdo->exec($sql); } $hash=password_hash($_POST['admin_pass']??'admin123',PASSWORD_DEFAULT); $stmt=$pdo->prepare('INSERT INTO users(name,email,password_hash,status,created_at) VALUES(?,?,?,?,NOW()) ON DUPLICATE KEY UPDATE name=VALUES(name),password_hash=VALUES(password_hash),status="active"'); $stmt->execute([$_POST['admin_name']??'Administrator',$_POST['admin_email']??'admin@example.com',$hash,'active']); $appKey=bin2hex(random_bytes(16)); $env="APP_NAME=BlueHR
+APP_URL=$appUrl
+APP_KEY=$appKey
+DB_HOST=$host
+DB_NAME=$db
+DB_USER=$user
+DB_PASS=$pass
+SESSION_NAME=bluehr_session
+"; file_put_contents(__DIR__.'/.env',$env); $success=true; }catch(Throwable $e){ $error=$e->getMessage(); }
+    }
+    ?><!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BlueHR Installer</title><style>body{font-family:Arial;background:#f5f7fb;margin:0;display:grid;place-items:center;min-height:100vh}.card{background:#fff;padding:28px;border-radius:20px;box-shadow:0 16px 40px #0001;width:min(560px,94vw)}input{width:100%;padding:11px;margin:6px 0 14px;border:1px solid #ddd;border-radius:10px}button{background:#38bdf8;color:#fff;border:0;border-radius:10px;padding:12px 18px;font-weight:bold}.ok{background:#dcfce7;padding:12px;border-radius:10px}.err{background:#fee2e2;padding:12px;border-radius:10px}</style></head><body><div class="card"><h1>Install BlueHR</h1><?php if($success): ?><div class="ok">Installation complete. <a href="public/login">Go to Login</a>. Please delete install.php.</div><?php else: ?><?php if($error): ?><div class="err"><?= htmlspecialchars($error) ?></div><?php endif; ?><form method="post"><label>Database Host</label><input name="db_host" value="127.0.0.1"><label>Database Name</label><input name="db_name" value="bluehr"><label>Database User</label><input name="db_user" value="root"><label>Database Password</label><input name="db_pass" type="password"><label>APP URL</label><input name="app_url" value="http://localhost/bluehr/public"><label>Admin Name</label><input name="admin_name" value="Administrator"><label>Admin Email</label><input name="admin_email" value="admin@example.com"><label>Admin Password</label><input name="admin_pass" value="admin123"><button>Install</button></form><?php endif; ?></div></body></html>

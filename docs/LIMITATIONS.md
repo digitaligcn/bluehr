@@ -1,0 +1,2 @@
+# Limitations
+This package provides a full operational baseline with generic CRUD/settings/reporting per module and BlueHub-ready integration intake. Domain-specific advanced engines such as real payment gateways, real email sending, deep accounting posting, AI provider calls, plagiarism checking, video conference APIs, and external connector execution require provider credentials and endpoint-specific follow-up implementation.

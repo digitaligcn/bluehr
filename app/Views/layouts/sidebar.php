@@ -1,0 +1,21 @@
+<aside class="sidebar"><div class="brand"><div class="brand-icon">B</div><div><strong>BlueHR</strong><span>Modular HRIS, Payroll, Approval, and People Analytics</span></div></div><nav class="menu"><a href="<?= app_url('/dashboard') ?>">Dashboard</a><a href="<?= app_url('/user-management') ?>"><?= e('UserManagement') ?></a>
+<a href="<?= app_url('/organization') ?>"><?= e('Organization') ?></a>
+<a href="<?= app_url('/employee') ?>"><?= e('Employee') ?></a>
+<a href="<?= app_url('/recruitment') ?>"><?= e('Recruitment') ?></a>
+<a href="<?= app_url('/onboarding') ?>"><?= e('Onboarding') ?></a>
+<a href="<?= app_url('/attendance') ?>"><?= e('Attendance') ?></a>
+<a href="<?= app_url('/leave') ?>"><?= e('Leave') ?></a>
+<a href="<?= app_url('/overtime') ?>"><?= e('Overtime') ?></a>
+<a href="<?= app_url('/timesheet') ?>"><?= e('Timesheet') ?></a>
+<a href="<?= app_url('/payroll') ?>"><?= e('Payroll') ?></a>
+<a href="<?= app_url('/approval') ?>"><?= e('Approval') ?></a>
+<a href="<?= app_url('/documents') ?>"><?= e('Documents') ?></a>
+<a href="<?= app_url('/facility-benefit') ?>"><?= e('FacilityBenefit') ?></a>
+<a href="<?= app_url('/performance') ?>"><?= e('Performance') ?></a>
+<a href="<?= app_url('/training') ?>"><?= e('Training') ?></a>
+<a href="<?= app_url('/google-drive') ?>"><?= e('GoogleDrive') ?></a>
+<a href="<?= app_url('/whats-app') ?>"><?= e('WhatsApp') ?></a>
+<a href="<?= app_url('/a-i-analytics') ?>"><?= e('AIAnalytics') ?></a>
+<a href="<?= app_url('/blue-hub-integration') ?>"><?= e('BlueHubIntegration') ?></a>
+<a href="<?= app_url('/reports') ?>"><?= e('Reports') ?></a>
+<a href="<?= app_url('/settings') ?>"><?= e('Settings') ?></a></nav></aside>
