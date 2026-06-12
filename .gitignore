@@ -1,0 +1,11 @@
+.env
+storage/logs/*
+storage/cache/*
+storage/exports/*
+storage/payslips/*
+storage/uploads/*
+!storage/logs/.gitkeep
+!storage/cache/.gitkeep
+!storage/exports/.gitkeep
+!storage/payslips/.gitkeep
+!storage/uploads/.gitkeep
