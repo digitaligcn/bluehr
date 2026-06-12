@@ -15,12 +15,12 @@ class LeaveTypeController extends Controller
             LEFT JOIN leave_eligibility_rules ler ON ler.leave_type_id = lt.id
             GROUP BY lt.id ORDER BY lt.name
         ');
-        return $this->render('leave/types/index', ['title'=>'Jenis Cuti','types'=>$types]);
+        $this->view('leave/types/index', ['title'=>'Jenis Cuti','types'=>$types]);
     }
 
     public function create(): void
     {
-        return $this->render('leave/types/form', [
+        $this->view('leave/types/form', [
             'title'=>'Tambah Jenis Cuti','mode'=>'create','type'=>null,'rules'=>[],
             'job_levels'=>Database::all('SELECT id,name FROM job_levels ORDER BY rank_no'),
             'employment_types'=>Database::all('SELECT id,name FROM employment_types ORDER BY name'),
@@ -45,7 +45,7 @@ class LeaveTypeController extends Controller
         $type = Database::one('SELECT * FROM leave_types WHERE id=?', [$id]);
         if (!$type) { flash('danger','Tidak ditemukan.'); redirect('/leave-types'); }
         $rules = Database::all('SELECT * FROM leave_eligibility_rules WHERE leave_type_id=? ORDER BY min_working_months', [$id]);
-        return $this->render('leave/types/form', [
+        $this->view('leave/types/form', [
             'title'=>'Edit Jenis Cuti','mode'=>'edit','type'=>$type,'rules'=>$rules,
             'job_levels'=>Database::all('SELECT id,name FROM job_levels ORDER BY rank_no'),
             'employment_types'=>Database::all('SELECT id,name FROM employment_types ORDER BY name'),
