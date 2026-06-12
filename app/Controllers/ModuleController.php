@@ -435,6 +435,71 @@ class ModuleController extends Controller
         redirect($redirect);
     }
 
+    public function deleteSettingRecord(): void
+    {
+        $type     = $_POST['_record_type'] ?? '';
+        $redirect = $_POST['_redirect'] ?? '/settings';
+        $id       = (int)($_POST['id'] ?? 0);
+        $map      = $this->recordMap();
+        if (!isset($map[$type]) || $id <= 0) { flash('error','Invalid request.'); redirect($redirect); }
+        $def = $map[$type];
+        try {
+            Database::exec('DELETE FROM '.$def['table'].' WHERE id=?', [$id]);
+            Audit::log('delete_'.$type, $def['table'], $id, []);
+            flash('success', $def['label'].' deleted.');
+        } catch (\Throwable $e) {
+            flash('error', 'Delete failed: '.$e->getMessage());
+        }
+        redirect($redirect);
+    }
+
+    public function editSettingRecord(): void
+    {
+        $type = $_GET['type'] ?? '';
+        $id   = (int)($_GET['id'] ?? 0);
+        $map  = $this->recordMap();
+        if (!isset($map[$type]) || $id <= 0) { flash('error','Invalid request.'); redirect('/settings'); }
+        $def  = $map[$type];
+        $row  = Database::one('SELECT * FROM '.$def['table'].' WHERE id=?', [$id]);
+        if (!$row) { flash('error','Record not found.'); redirect('/settings'); }
+        $this->view('module/record_edit', [
+            'title'     => 'Edit '.$def['label'],
+            'type'      => $type,
+            'def'       => $def,
+            'row'       => $row,
+            'redirect'  => $_SERVER['HTTP_REFERER'] ?? '/settings',
+        ]);
+    }
+
+    public function updateSettingRecord(): void
+    {
+        $type     = $_POST['_record_type'] ?? '';
+        $redirect = $_POST['_redirect'] ?? '/settings';
+        $id       = (int)($_POST['id'] ?? 0);
+        $map      = $this->recordMap();
+        if (!isset($map[$type]) || $id <= 0) { flash('error','Invalid request.'); redirect($redirect); }
+        $def  = $map[$type];
+        $sets = [];
+        $vals = [];
+        foreach ($def['columns'] as $column => $options) {
+            if ($options['default_company'] ?? false) continue;
+            $sets[] = $column.'=?';
+            $val = $_POST[$column] ?? ($options['default'] ?? null);
+            if (($options['bool'] ?? false) === true) $val = (int)$val;
+            if ($val === '') $val = null;
+            $vals[] = $val;
+        }
+        $vals[] = $id;
+        try {
+            Database::exec('UPDATE '.$def['table'].' SET '.implode(',',$sets).' WHERE id=?', $vals);
+            Audit::log('update_'.$type, $def['table'], $id, $_POST);
+            flash('success', $def['label'].' updated.');
+        } catch (\Throwable $e) {
+            flash('error', 'Update failed: '.$e->getMessage());
+        }
+        redirect($redirect);
+    }
+
     private function recordMap(): array
     {
         return [

@@ -85,10 +85,21 @@
         <table class="table compact">
           <tr>
             <?php foreach(array_keys($rows[0]) as $col): ?><th><?=e(ucwords(str_replace('_',' ',$col)))?></th><?php endforeach; ?>
+            <th>Actions</th>
           </tr>
           <?php foreach($rows as $row): ?>
             <tr>
               <?php foreach($row as $value): ?><td><?=e((string)$value)?></td><?php endforeach; ?>
+              <td style="white-space:nowrap">
+                <a class="btn btn-light btn-sm" href="<?=url('/settings/record/edit?type='.urlencode($recordKey).'&id='.urlencode($row['id'] ?? ''))?>">Edit</a>
+                <form method="post" action="<?=url('/settings/record/delete')?>" class="inline-form" onsubmit="return confirm('Delete this record?')">
+                  <?=csrf_field()?>
+                  <input type="hidden" name="_record_type" value="<?=e($recordKey)?>">
+                  <input type="hidden" name="_redirect" value="<?=e(request_path())?>">
+                  <input type="hidden" name="id" value="<?=e($row['id'] ?? '')?>">
+                  <button class="btn btn-danger btn-sm">Delete</button>
+                </form>
+              </td>
             </tr>
           <?php endforeach; ?>
         </table>
